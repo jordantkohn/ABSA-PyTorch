@@ -1,3 +1,25 @@
+### Updates:
+This repository integrates layers and modules from the [blitz bayesian deep learning library](https://github.com/piEsposito/blitz-bayesian-deep-learning) into the models constructed to solve the ABSA task using restaurant and laptop reviews data.
+
+
+* added Bayesian models:
+  * bert_bayes_spc.py
+  * gru_bayes.py
+  * lstm_bayes_fc.py
+  * lstm_bayes_rnn.py
+* added Bayesian layers/modules:
+  * dynamic_rnn_bayes.py
+  * gru_bayesian_layer.py
+  * linear_bayesian_layer.py
+  * lstm_bayesian_layer.py
+* added train/test files:
+  * train_bayes.py
+  * test_bayes.py
+  * test_custom_text.py
+
+
+
+-------------------------------------------------------------
 # ABSA-PyTorch
 
 > Aspect Based Sentiment Analysis, PyTorch Implementations.
