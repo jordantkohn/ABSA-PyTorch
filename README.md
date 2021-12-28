@@ -21,8 +21,10 @@ New Bayesian models added to 'models' directory.
 ```
 # test any of the bayesian models on either dataset using train_bayes.py
 !python test_bayes.py --model_name bert_bayes_spc --model_statedict bert_bayes_spc_restaurant_val_acc_0.8348 --dataset restaurant
-```
 
+# add custom text in new file in 'datasets/custom/' and view predictions/uncertainties of each
+!python test_custom_text.py --model_name bert_bayes_spc --model_statedict bert_bayes_spc_restaurant_val_acc_0.8348 --dataset my_custom_examples
+```
 -------------------------------------------------------------
 # ABSA-PyTorch
 
