@@ -2,13 +2,12 @@
 This repository integrates layers and modules from the [blitz bayesian deep learning library](https://github.com/piEsposito/blitz-bayesian-deep-learning) into the models constructed to solve the ABSA task using restaurant and laptop reviews data.
 
 
-New Bayesian models added to 'models' directory.
-* these models use new blitz Bayesian layers from 'layers' directory
+New Bayesian models added to 'models' directory. These models use new blitz Bayesian layers from 'layers' directory
 
-* added train/test files:
-  * train_bayes.py: uses blitz's sample_elbo() method to calculate training loss for backprop
-  * test_bayes.py: only makes prediction on test examples where model confidence exceeds threshold
-  * test_custom_text.py: UPDATE
+Added train/test files:
+* train_bayes.py: uses blitz's sample_elbo() method to calculate training loss for backprop
+* test_bayes.py: only makes prediction on test examples where model confidence exceeds threshold
+* test_custom_text.py: UPDATE
 
 ### Usage:
 
