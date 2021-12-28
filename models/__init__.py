@@ -16,3 +16,8 @@ from models.aoa import AOA
 from models.mgan import MGAN
 from models.lcf_bert import LCF_BERT
 from models.asgcn import ASGCN
+from models.lstm_bert_embed import LSTM_BERT_EMBED
+from models.bert_bayes_spc import BERT_BAYES_SPC
+from models.lstm_bayes_fc import LSTM_BAYES_FC
+from models.gru_bayes import GRU_BAYES
+from models.lstm_bayes_rnn import LSTM_BAYES_RNN

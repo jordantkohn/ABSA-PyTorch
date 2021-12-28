@@ -1,24 +1,31 @@
 # -*- coding: utf-8 -*-
-# file: atae-lstm
+# file: lstm.py
 # author: songyouwei <youwei0314@gmail.com>
 # Copyright (C) 2018. All Rights Reserved.
-from layers.attention import Attention, NoQueryAttention
+
 from layers.dynamic_rnn import DynamicLSTM
 import torch
 import torch.nn as nn
-
+##### Bayesian version #####
+from layers.linear_bayesian_layer import BayesianLinear
+from blitz.utils import variational_estimator
+from layers.attention import Attention, NoQueryAttention
 from layers.squeeze_embedding import SqueezeEmbedding
 
 
-class ATAE_LSTM(nn.Module):
+@variational_estimator
+class LSTM_BAYES_FC(nn.Module):
     def __init__(self, embedding_matrix, opt):
-        super(ATAE_LSTM, self).__init__()
+        super(LSTM_BAYES_FC, self).__init__()
         self.opt = opt
         self.embed = nn.Embedding.from_pretrained(torch.tensor(embedding_matrix, dtype=torch.float))
         self.squeeze_embedding = SqueezeEmbedding()
         self.lstm = DynamicLSTM(opt.embed_dim*2, opt.hidden_dim, num_layers=1, batch_first=True)
+        self.dense = BayesianLinear(opt.hidden_dim, opt.polarities_dim, bias=True, freeze = False, 
+        prior_sigma_1 = 2, prior_sigma_2 = 2, posterior_rho_init  = -1)
         self.attention = NoQueryAttention(opt.hidden_dim+opt.embed_dim, score_function='bi_linear')
-        self.dense = nn.Linear(opt.hidden_dim, opt.polarities_dim)
+
+        # self.dense = nn.Linear(opt.hidden_dim, opt.polarities_dim)
 
     def forward(self, inputs):
         text_indices, aspect_indices = inputs[0], inputs[1]
@@ -37,6 +44,5 @@ class ATAE_LSTM(nn.Module):
         ha = torch.cat((h, aspect), dim=-1)
         _, score = self.attention(ha)
         output = torch.squeeze(torch.bmm(score, h), dim=1)
-
         out = self.dense(output)
         return out
