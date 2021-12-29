@@ -9,8 +9,8 @@ Use train_bayes.py when training a bayesian model. Key difference: loss is calcu
 #### Uncertainty:
 Bayesian models provide the ability to estimate the uncertainty of a model regarding a certain set of predictions. Bayesian models' output is stochastic due to the nature of the weights and biases in the model: they are distributions rather than just values. We can then make *n* predictions for a given output and analyze the behavior of the range of outputs. There are multiple ways to calculate uncertainty here, but here we use a simple measure of confidence.
   Given a single example *x*, we define our model confidence as follows: out of *n* predictions made on *x*, we first find the class that is most frequently predicted, *c*. The confidence is simply the fraction of the frequency of *c* divided by *n*. For example, if we predict 5 times for *x* and get predictions [0,1,0,1,1], then our confidence would be 0.60.
-  
-$\widehat{h}$
+
+With this capability, we can analyze the confidence for correct and incorrect predictions. In test_bayes.py, there is code that instructs the model not to make a prediction if the confidence is below a threshold. This may seem like a bit of a hack, but it has been shown to increase accuracy of the model.
 
 ### Usage:
 
