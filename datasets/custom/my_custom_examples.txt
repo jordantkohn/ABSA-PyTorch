@@ -1,0 +1,18 @@
+The food is bad, the ambiance is awful, but the $T$ is fast
+service
+1
+The $T$ was so good and also very bad
+food
+0
+The $T$ was piquant
+food
+1
+The $T$ was not bad
+food
+0
+The $T$ was really spicy and really soft. it also has a low carbon footprint.
+food
+0
+The $T$ was so recent that many things lacked names, and in order to indicate them it was necessary to point.
+world
+0

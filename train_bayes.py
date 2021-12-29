@@ -117,7 +117,6 @@ class Instructor:
                 optimizer.zero_grad()
 
                 inputs = [batch[col].to(self.opt.device) for col in self.opt.inputs_cols]
-                # print('inputs', inputs.shape)
                 targets = batch['polarity'].to(self.opt.device)
 
                 #################
@@ -126,32 +125,21 @@ class Instructor:
                 # outputs = self.model(inputs)
                 # loss = criterion(outputs, targets)
 
-                ##################
-                # bayesian loss calculation 
-                # pi_weight = minibatch_weight(batch_idx=i_batch, num_batches=self.opt.batch_size)
-
-
                 loss = self.model.sample_elbo(
                         inputs=inputs,
                         labels=targets,
                         criterion=nn.CrossEntropyLoss(),
                         sample_nbr=10,
                         complexity_cost_weight=1/len(self.trainset))
-                        # complexity_cost_weight = pi_weight)
       
                 ##################
 
                 loss.backward()
                 optimizer.step()
 
-                # take 3 outputs per example
+                # take 3 outputs per example. tske average across the 3.
                 outputs = torch.stack([self.model(inputs) for i in range(3)])
                 preds = torch.mean(outputs, axis=0)
-
-                ### IMPORTANT QUESTION!
-                # for calculating training accuracy, we predict n times for each example, then either:
-                ## avg values for each class (-1,0,1) across ass n predictions and then take argmax for final prediction
-                ## OR take argmax for each n prediction, then take the mode class for each example as the final prediction
 
                 n_correct += (torch.argmax(preds, -1) == targets).sum().item()
                 n_total += len(preds)
@@ -177,8 +165,6 @@ class Instructor:
             if val_acc > max_val_acc:
                 max_val_acc = val_acc
                 max_val_epoch = i_epoch
-                if not os.path.exists('state_dict'):
-                    os.mkdir('state_dict')
                 path = 'state_dict/{0}_{1}_val_acc_{2}'.format(self.opt.model_name, self.opt.dataset, round(val_acc, 4))
                 torch.save(self.model.state_dict(), path)
                 logger.info('>> saved: {}'.format(path))
@@ -189,42 +175,42 @@ class Instructor:
             val_acc_list.append(val_acc)
 
             if i_epoch - max_val_epoch >= self.opt.patience:
-                print('>> early stop.')
+                logger.info('>> early stop.')
                 break
 
-        youssef_epoch_train_loss = [(i, l) for i, l in enumerate(train_loss_list)]
-        youssef_epochs_fortrain_loss = [tup[0] for tup in youssef_epoch_train_loss]
-        youssef_train_loss = [tup[1] for tup in youssef_epoch_train_loss]
+        bayes_epoch_train_loss = [(i, l) for i, l in enumerate(train_loss_list)]
+        bayes_epochs_fortrain_loss = [tup[0] for tup in bayes_epoch_train_loss]
+        bayes_train_loss = [tup[1] for tup in bayes_epoch_train_loss]
 
-        youssef_epoch_val_loss = [(i, l) for i, l in enumerate(val_loss_list)]
-        youssef_epochs_forval_loss = [tup[0] for tup in youssef_epoch_val_loss]
-        youssef_val_loss = [tup[1] for tup in youssef_epoch_val_loss]
+        bayes_epoch_val_loss = [(i, l) for i, l in enumerate(val_loss_list)]
+        bayes_epochs_forval_loss = [tup[0] for tup in bayes_epoch_val_loss]
+        bayes_val_loss = [tup[1] for tup in bayes_epoch_val_loss]
 
-        matplotlib.pyplot.plot(youssef_epochs_fortrain_loss, youssef_train_loss, label='Train Loss')
-        matplotlib.pyplot.plot(youssef_epochs_forval_loss, youssef_val_loss, label='Val Loss')
-        matplotlib.pyplot.legend(loc="upper left")
-        matplotlib.pyplot.xlabel("Epochs")
-        matplotlib.pyplot.ylabel("Loss")
-        matplotlib.pyplot.title("Loss "+str(self.opt.model_name))
-        matplotlib.pyplot.savefig('graphs/TrainValLoss_'+" "+str(self.opt.model_name)+".jpg")
+        plt.plot(bayes_epochs_fortrain_loss, bayes_train_loss, label='Train Loss')
+        plt.plot(bayes_epochs_forval_loss, bayes_val_loss, label='Val Loss')
+        plt.legend(loc="upper left")
+        plt.xlabel("Epochs")
+        plt.ylabel("Loss")
+        plt.title("Loss "+str(self.opt.model_name))
+        plt.savefig('graphs/TrainValLoss_'+" "+str(self.opt.model_name)+".jpg")
 
-        youssef_epoch_train_acc = [(i, l) for i, l in enumerate(train_acc_list)]
-        youssef_epoch_val_acc = [(i, l) for i, l in enumerate(val_acc_list)]
+        bayes_epoch_train_acc = [(i, l) for i, l in enumerate(train_acc_list)]
+        bayes_epoch_val_acc = [(i, l) for i, l in enumerate(val_acc_list)]
 
-        youssef_epochs_train_acc = [tup[0] for tup in youssef_epoch_train_acc]
-        youssef_epochs_val_acc = [tup[0] for tup in youssef_epoch_val_acc]
-        youssef_train_acc = [tup[1] for tup in youssef_epoch_train_acc]
-        youssef_val_acc = [tup[1] for tup in youssef_epoch_val_acc]
+        bayes_epochs_train_acc = [tup[0] for tup in bayes_epoch_train_acc]
+        bayes_epochs_val_acc = [tup[0] for tup in bayes_epoch_val_acc]
+        bayes_train_acc = [tup[1] for tup in bayes_epoch_train_acc]
+        bayes_val_acc = [tup[1] for tup in bayes_epoch_val_acc]
 
-        matplotlib.pyplot.clf()
-        matplotlib.pyplot.plot(youssef_epochs_train_acc, youssef_train_acc, label='Train Acc')
-        matplotlib.pyplot.plot(youssef_epochs_val_acc, youssef_val_acc, label='Val Acc')
-        matplotlib.pyplot.legend(loc="upper left")
-        matplotlib.pyplot.ylabel("Accuracy")
-        matplotlib.pyplot.xlabel("Epochs")
-        matplotlib.pyplot.title("Accuracy "+str(self.opt.model_name))
-        matplotlib.pyplot.savefig('graphs/TrainValAcc_'+" "+str(self.opt.model_name)+".jpg")
-        matplotlib.pyplot.clf
+        plt.clf()
+        plt.plot(bayes_epochs_train_acc, bayes_train_acc, label='Train Acc')
+        plt.plot(bayes_epochs_val_acc, bayes_val_acc, label='Val Acc')
+        plt.legend(loc="upper left")
+        plt.ylabel("Accuracy")
+        plt.xlabel("Epochs")
+        plt.title("Accuracy "+str(self.opt.model_name))
+        plt.savefig('graphs/TrainValAcc_'+" "+str(self.opt.model_name)+".jpg")
+        plt.clf
 
         return path
 

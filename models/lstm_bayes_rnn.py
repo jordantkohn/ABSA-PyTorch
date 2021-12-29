@@ -23,14 +23,9 @@ class LSTM_BAYES_RNN(nn.Module):
                 posterior_rho_init=-3,
                 sharpen=True,
                 peephole=True)
-                #  prior_pi = 1,
-                #  posterior_mu_init = 0,
-                #  posterior_rho_init = -6.0,
         self.opt = opt
         self.embed = nn.Embedding.from_pretrained(torch.tensor(embedding_matrix, dtype=torch.float))
         self.squeeze_embedding = SqueezeEmbedding()
-        # self.dense = BayesianLinear(opt.hidden_dim, opt.polarities_dim, bias=True, freeze = False, 
-                          # prior_sigma_1 = 10, prior_sigma_2 = 10, posterior_rho_init  = 5 )
         self.attention = NoQueryAttention(opt.hidden_dim+opt.embed_dim, score_function='bi_linear')
 
         self.dense = nn.Linear(opt.hidden_dim, opt.polarities_dim)

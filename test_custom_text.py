@@ -126,10 +126,9 @@ class Instructor:
                 n_total += len(t_preds)
 
                 # visualization
-                chart_file = '/content/drive/MyDrive/DLFinal Project/notebooks/ABSA-PyTorch-master/graphs/{}-{}-{}_{}.png'.format(
+                chart_file = 'graphs/{}-{}-{}_{}.png'.format(
                   self.opt.model_name, self.opt.dataset, strftime("%y%m%d-%H%M", localtime()), i_batch)
 
-                # this only works if batch size = 1
                 confidence_by_class = torch.bincount(t_preds_sample.T[0]).cpu().numpy()
                 
                 plt.figure(figsize=(8,6))
@@ -140,11 +139,6 @@ class Instructor:
                 plt.xlabel('sentiment')
                 plt.savefig(chart_file)
 
-    
-
-        # acc = n_correct / n_total
-        # acc_conf = n_correct_conf / n_total_conf
-        # percent_conf = n_total_conf / n_total
 
         return texts, confs, preds, labels
 

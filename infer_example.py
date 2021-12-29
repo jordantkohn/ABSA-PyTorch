@@ -161,4 +161,4 @@ if __name__ == '__main__':
 
     inf = Inferer(opt)
     t_probs = inf.evaluate('the service is terrible', 'service')
-    print(t_probs.argmax(axis=-1) - 1)
+

@@ -20,6 +20,5 @@ class BERT_BAYES_SPC(nn.Module):
         _, pooled_output = self.bert(text_bert_indices, token_type_ids=bert_segments_ids, return_dict=False)
         # x_len = torch.sum(text_bert_indices != 0, dim=-1)
         # pooled_output = self.dropout(pooled_output)
-        # print("pooled", pooled_output, pooled_output.shape)
         logits = self.dense(pooled_output)
         return logits

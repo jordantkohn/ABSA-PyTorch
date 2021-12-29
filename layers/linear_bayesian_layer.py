@@ -91,8 +91,6 @@ class BayesianLinear(BayesianModule):
 
         # Get the complexity cost
         self.log_variational_posterior = self.weight_sampler.log_posterior() + b_log_posterior
-        # print('bayeslinear weight log prior', self.weight_prior_dist.log_prior(w))
-        # print('bayeslinear bias log prior', b_log_prior)
         self.log_prior = self.weight_prior_dist.log_prior(w) + b_log_prior
 
         return F.linear(x, w, b)

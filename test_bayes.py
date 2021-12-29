@@ -171,10 +171,7 @@ class Instructor:
         acc, acc_conf, percent_conf, correct_pred, confidence = self._test_confidence(test_data_loader)
         logger.info('>> test_acc: {:.4f}, test_acc_conf: {:.4f}, percent_conf: {:4f} '.format(acc, acc_conf, percent_conf))
 
-        # print('corrects', correct_pred)
-        # print('confidences', confidence)
-
-        chart_file = '/content/drive/MyDrive/DLFinal Project/notebooks/ABSA-PyTorch-master/graphs/confidence_{}-{}.png'.format(
+        chart_file = 'graphs/confidence_{}-{}.png'.format(
                   self.opt.model_name, strftime("%y%m%d-%H%M", localtime()))
 
         corrects = []
@@ -315,9 +312,6 @@ def main():
     opt.optimizer = optimizers[opt.optimizer]
     opt.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') \
         if opt.device is None else torch.device(opt.device)
-
-    # log_file = '/content/drive/MyDrive/DLFinal Project/notebooks/ABSA-PyTorch-master/logs/{}-{}-{}.log'.format(opt.model_name, opt.dataset, strftime("%y%m%d-%H%M", localtime()))
-    # logger.addHandler(logging.FileHandler(log_file))
 
     ins = Instructor(opt)
     ins.run()

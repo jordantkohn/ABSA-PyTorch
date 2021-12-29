@@ -65,7 +65,6 @@ class DynamicBayesLSTM(nn.Module):
         x = x[x_sort_idx]
         """pack"""
         x_emb_p = torch.nn.utils.rnn.pack_padded_sequence(x, x_len, batch_first=self.batch_first)
-        print(x_emb_p)
         # process using the selected RNN
         if self.rnn_type == 'LSTM': 
             out_pack, (ht, ct) = self.RNN(x_emb_p)
