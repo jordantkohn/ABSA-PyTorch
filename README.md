@@ -1,3 +1,34 @@
+### Updates:
+This repository integrates layers and modules from the [blitz bayesian deep learning library](https://github.com/piEsposito/blitz-bayesian-deep-learning) into the models constructed to solve the ABSA task using restaurant and laptop reviews data.
+
+New Bayesian models added to [models directory](./models/). These models use new blitz Bayesian layers from [layers directory](./layers/)
+
+#### Training:
+Use train_bayes.py when training a bayesian model. Key difference: loss is calculated using blitz's sample_elbo() method which includes KL divergence for weight/bias distributions in addition to cross entropy loss.
+
+#### Uncertainty:
+Bayesian models provide the ability to estimate the uncertainty of a model regarding a certain set of predictions. Bayesian models' output is stochastic due to the nature of the weights and biases in the model: they are distributions rather than just values. We can then make *n* predictions for a given output and analyze the behavior of the range of outputs. There are multiple ways to calculate uncertainty here, but here we use a simple measure of confidence.
+
+- Given a single example *x*, we define our model confidence as follows: out of *n* predictions made on *x*, we first find the class that is most frequently predicted, *c*. The confidence is simply the fraction of the frequency of *c* divided by *n*. For example, if we predict 5 times for *x* and get predictions [0,1,0,1,1], then our confidence would be 0.60.
+
+With this capability, we can analyze the confidence for correct and incorrect predictions. In test_bayes.py, there is code that instructs the model not to make a prediction if the confidence is below a threshold. This may seem like a bit of a hack, but it has been shown to increase accuracy of the model.
+
+### Usage:
+
+Train:
+```
+# train any of the bayesian models on either dataset using train_bayes.py
+!python train_bayes.py --model_name lstm_bayes_fc --dataset restaurant --patience 5 --num_epoch 10 --lr 1e-3 --batch_size 16
+```
+Test:
+```
+# test any of the bayesian models on either dataset using train_bayes.py
+!python test_bayes.py --model_name bert_bayes_spc --model_statedict bert_bayes_spc_restaurant_val_acc_0.8348 --dataset restaurant
+
+# add custom text in new file in 'datasets/custom/' and view predictions/uncertainties of each
+!python test_custom_text.py --model_name bert_bayes_spc --model_statedict bert_bayes_spc_restaurant_val_acc_0.8348 --dataset my_custom_examples
+```
+-------------------------------------------------------------
 # ABSA-PyTorch
 
 > Aspect Based Sentiment Analysis, PyTorch Implementations.
